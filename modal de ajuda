@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navegue Seguro - Guia de Segurança Digital</title>
+  
+  <style>
+    /* Reset básico e variáveis de cores acessíveis */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --cor-fundo: #f0f4f8;
+      --cor-cartao: #ffffff;
+      --cor-texto: #1a202c;
+      --cor-primaria: #004b87;
+      --cor-primaria-hover: #003366;
+      --cor-destaque: #d9381e;
+      --cor-alerta-fundo: #fff9e6;
+      --cor-alerta-borda: #b37400;
+      --cor-sucesso-fundo: #e6f4ea;
+      --cor-sucesso-borda: #137333;
+      --tamanho-fonte-base: 22px;
+      --tamanho-fonte-titulo: 32px;
+      --espacamento-padrao: 20px;
+    }
+
+    /* Esconde seletores de estado (checkbox/radio ocultos para lógica pura em CSS) */
+    .seletor-estado {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Regras do Modo Alto Contraste */
+    #toggle-contraste:checked ~ .aplicacao {
+      --cor-fundo: #000000;
+      --cor-cartao: #121212;
+      --cor-texto: #ffffff;
+      --cor-primaria: #ffff00;
+      --cor-primaria-hover: #e6e600;
+      --cor-destaque: #ff6666;
+      --cor-alerta-fundo: #332600;
+      --cor-alerta-borda: #ffff00;
+      --cor-sucesso-fundo: #003311;
+      --cor-sucesso-borda: #00ff66;
+    }
+
+    /* Regras para Aumento de Fonte */
+    #toggle-fonte:checked ~ .aplicacao {
+      --tamanho-fonte-base: 26px;
+      --tamanho-fonte-titulo: 38px;
+    }
+
+    /* Estilo do corpo da página */
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #dbe2e9;
+      color: #1a202c;
+      line-height: 1.6;
+      padding: 10px;
+    }
+
+    .aplicacao {
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: var(--cor-fundo);
+      color: var(--cor-texto);
+      border-radius: 16px;
+      padding: var(--espacamento-padrao);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      font-size: var(--tamanho-fonte-base);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* Barra de acessibilidade topo */
+    .barra-acessibilidade {
+      background-color: var(--cor-cartao);
+      border: 3px solid var(--cor-primaria);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 25px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .botao-acessibilidade {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background-color: var(--cor-primaria);
+      color: #ffffff;
+      padding: 14px 20px;
+      border-radius: 10px;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      border: 3px solid transparent;
+      user-select: none;
+    }
+
+    #toggle-contraste:checked ~ .aplicacao .botao-acessibilidade {
+      color: #000000;
+    }
+
+    .botao-acessibilidade:hover,
+    .botao-acessibilidade:focus-within {
+      outline: 4px solid #ffbf00;
+    }
+
+    /* Cabeçalho */
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 4px solid var(--cor-primaria);
+      padding-bottom: 20px;
+    }
+
+    header h1 {
+      font-size: var(--tamanho-fonte-titulo);
+      color: var(--cor-primaria);
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-weight: bold;
+    }
+
+    /* Navegação por Abas */
+    .navegacao-abas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .aba-rotulo {
+      flex: 1 1 200px;
+      text-align: center;
+      background-color: var(--cor-cartao);
+      color: var(--cor-texto);
+      border: 3px solid var(--cor-primaria);
+      padding: 16px var(--espacamento-padrao);
+      border-radius: 12px;
+      font-size: var(--tamanho-fonte-base);
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .aba-rotulo:hover {
+      background-color: var(--cor-primaria);
+      color: #ffffff;
+    }
+
+    #toggle-contraste:checked ~ .aplicacao .aba-rotulo:hover {
+      color: #000000;
+    }
+
+    /* Mostrar aba selecionada via seletor :checked */
+    #aba-dicas:checked ~ .aplicacao label[for="aba-dicas"],
+    #aba-dicionario:checked ~ .aplicacao label[for="aba-dicionario"],
+    #aba-quiz:checked ~ .aplicacao label[for="aba-quiz"],
+    #aba-socorro:checked ~ .aplicacao label[for="aba-socorro"] {
+      background-color: var(--cor-primaria);
+      color: #ffffff;
+      outline: 4px solid #ffbf00;
+    }
+
+    #toggle-contraste:checked ~ .aplicacao #aba-dicas:checked ~ .aplicacao label[for="aba-dicas"],
+    #toggle-contraste:checked ~ .aplicacao #aba-dicionario:checked ~ .aplicacao label[for="aba-dicionario"],
+    #toggle-contraste:checked ~ .aplicacao #aba-quiz:checked ~ .aplicacao label[for="aba-quiz"],
+    #toggle-contraste:checked ~ .aplicacao #aba-socorro:checked ~ .aplicacao label[for="aba-socorro"] {
+      color: #000000;
+    }
+
+    /* Esconder todos os painéis por padrão */
+    .painel-conteudo {
+      display: none;
+    }
+
+    /* Exibir apenas o painel ativo */
+    #aba-dicas:checked ~ .aplicacao #painel-dicas,
+    #aba-dicionario:checked ~ .aplicacao #painel-dicionario,
+    #aba-quiz:checked ~ .aplicacao #painel-quiz,
+    #aba-socorro:checked ~ .aplicacao #painel-socorro {
+      display: block;
+    }
+
+    /* Cartões e Blocos de Conteúdo */
+    .cartao {
+      background-color: var(--cor-cartao);
+      border: 3px solid var(--cor-primaria);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 25px;
+    }
+
+    .cartao h2, .cartao h3 {
+      color: var(--cor-primaria);
+      margin-bottom: 12px;
+      font-size: calc(var(--tamanho-fonte-base) + 4px);
+    }
+
+    .cartao p {
+      margin-bottom: 15px;
+    }
+
+    /* Caixa de Alerta amarela/escura */
+    .caixa-alerta {
+      background-color: var(--cor-alerta-fundo);
+      border-left: 8px solid var(--cor-alerta-borda);
+      padding: 16px;
+      border-radius: 6px;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    /* Caixa de Sucesso verde/escura */
+    .caixa-sucesso {
+      background-color: var(--cor-sucesso-fundo);
+      border-left: 8px solid var(--cor-sucesso-borda);
+      padding: 16px;
+      border-radius: 6px;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    /* Dicionário expansível (usando HTML5 details/summary) */
+    details {
+      background-color: var(--cor-cartao);
+      border: 2px solid var(--cor-primaria);
+      border-radius: 10px;
+      margin-bottom: 15px;
+      padding: 12px;
+    }
+
+    summary {
+      font-weight: bold;
+      font-size: calc(var(--tamanho-fonte-base) + 2px);
+      color: var(--cor-primaria);
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    summary:hover, summary:focus {
+      background-color: rgba(0, 75, 135, 0.1);
+      border-radius: 6px;
+    }
+
+    details p {
+      margin-top: 12px;
+      padding-left: 8px;
+    }
+
+    /* Estilos do Quiz */
+    .pergunta-quiz {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px dashed var(--cor-primaria);
+    }
+
+    .opcao-quiz {
+      display: block;
+      background-color: var(--cor-fundo);
+      border: 2px solid var(--cor-primaria);
+      padding: 14px;
+      border-radius: 10px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .opcao-quiz:hover {
+      outline: 3px solid #ffbf00;
+    }
+
+    .resposta-feedback {
+      display: none;
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    /* Lógica do Quiz com CSS puro */
+    #q1-correta:checked ~ #f1-correto,
+    #q1-errada:checked ~ #f1-errado,
+    #q2-correta:checked ~ #f2-correto,
+    #q2-errada:checked ~ #f2-errado {
+      display: block;
+    }
+
+    /* Botões grandes de ação */
+    .btn-ligar {
+      display: block;
+      width: 100%;
+      background-color: var(--cor-destaque);
+      color: #ffffff;
+      text-align: center;
+      font-weight: bold;
+      font-size: calc(var(--tamanho-fonte-base) + 2px);
+      padding: 20px;
+      text-decoration: none;
+      border-radius: 12px;
+      margin-top: 15px;
+      border: none;
+    }
+
+    .btn-ligar:hover, .btn-ligar:focus {
+      outline: 5px solid #ffbf00;
+    }
+
+    /* Rodapé */
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 2px solid var(--cor-primaria);
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Controles de estado via Checkbox / Radio (Acessibilidade e Abas) -->
+  <input type="checkbox" id="toggle-contraste" class="<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navegue Seguro - Guia de Segurança Digital</title>
+  
+  <style>
+    /* Reset básico e variáveis de cores acessíveis */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --cor-fundo: #f0f4f8;
+      --cor-cartao: #ffffff;
+      --cor-texto: #1a202c;
+      --cor-primaria: #004b87;
+      --cor-primaria-hover: #003366;
+      --cor-destaque: #d9381e;
+      --cor-alerta-fundo: #fff9e6;
+      --cor-alerta-borda: #b37400;
+      --cor-sucesso-fundo: #e6f4ea;
+      --cor-sucesso-borda: #137333;
+      --tamanho-fonte-base: 22px;
+      --tamanho-fonte-titulo: 32px;
+      --espacamento-padrao: 20px;
+    }
+
+    /* Esconde seletores de estado (checkbox/radio ocultos para lógica pura em CSS) */
+    .seletor-estado {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Regras do Modo Alto Contraste */
+    #toggle-contraste:checked ~ .aplicacao {
+      --cor-fundo: #000000;
+      --cor-cartao: #121212;
+      --cor-texto: #ffffff;
+      --cor-primaria: #ffff00;
+      --cor-primaria-hover: #e6e600;
+      --cor-destaque: #ff6666;
+      --cor-alerta-fundo: #332600;
+      --cor-alerta-borda: #ffff00;
+      --cor-sucesso-fundo: #003311;
+      --cor-sucesso-borda: #00ff66;
+    }
+
+    /* Regras para Aumento de Fonte */
+    #toggle-fonte:checked ~ .aplicacao {
+      --tamanho-fonte-base: 26px;
+      --tamanho-fonte-titulo: 38px;
+    }
+
+    /* Estilo do corpo da página */
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #dbe2e9;
+      color: #1a202c;
+      line-height: 1.6;
+      padding: 10px;
+    }
+
+    .aplicacao {
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: var(--cor-fundo);
+      color: var(--cor-texto);
+      border-radius: 16px;
+      padding: var(--espacamento-padrao);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      font-size: var(--tamanho-fonte-base);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* Barra de acessibilidade topo */
+    .barra-acessibilidade {
+      background-color: var(--cor-cartao);
+      border: 3px solid var(--cor-primaria);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 25px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .botao-acessibilidade {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background-color: var(--cor-primaria);
+      color: #ffffff;
+      padding: 14px 20px;
+      border-radius: 10px;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      border: 3px solid transparent;
+      user-select: none;
+    }
+
+    #toggle-contraste:checked ~ .aplicacao .botao-acessibilidade {
+      color: #000000;
+    }
+
+    .botao-acessibilidade:hover,
+    .botao-acessibilidade:focus-within {
+      outline: 4px solid #ffbf00;
+    }
+
+    /* Cabeçalho */
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 4px solid var(--cor-primaria);
+      padding-bottom: 20px;
+    }
+
+    header h1 {
+      font-size: var(--tamanho-fonte-titulo);
+      color: var(--cor-primaria);
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-weight: bold;
+    }
+
+    /* Navegação por Abas */
+    .navegacao-abas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .aba-rotulo {
+      flex: 1 1 200px;
+      text-align: center;
+      background-color: var(--cor-cartao);
+      color: var(--cor-texto);
+      border: 3px solid var(--cor-primaria);
+      padding: 16px var(--espacamento-padrao);
+      border-radius: 12px;
+      font-size: var(--tamanho-fonte-base);
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .aba-rotulo:hover {
+      background-color: var(--cor-primaria);
+      color: #ffffff;
+    }
+
+    #toggle-contraste:checked ~ .aplicacao .aba-rotulo:hover {
+      color: #000000;
+    }
+
+    /* Mostrar aba selecionada via seletor :checked */
+    #aba-dicas:checked ~ .aplicacao label[for="aba-dicas"],
+    #aba-dicionario:checked ~ .aplicacao label[for="aba-dicionario"],
+    #aba-quiz:checked ~ .aplicacao label[for="aba-quiz"],
+    #aba-socorro:checked ~ .aplicacao label[for="aba-socorro"] {
+      background-color: var(--cor-primaria);
+      color: #ffffff;
+      outline: 4px solid #ffbf00;
+    }
+
+    #toggle-contraste:checked ~ .aplicacao #aba-dicas:checked ~ .aplicacao label[for="aba-dicas"],
+    #toggle-contraste:checked ~ .aplicacao #aba-dicionario:checked ~ .aplicacao label[for="aba-dicionario"],
+    #toggle-contraste:checked ~ .aplicacao #aba-quiz:checked ~ .aplicacao label[for="aba-quiz"],
+    #toggle-contraste:checked ~ .aplicacao #aba-socorro:checked ~ .aplicacao label[for="aba-socorro"] {
+      color: #000000;
+    }
+
+    /* Esconder todos os painéis por padrão */
+    .painel-conteudo {
+      display: none;
+    }
+
+    /* Exibir apenas o painel ativo */
+    #aba-dicas:checked ~ .aplicacao #painel-dicas,
+    #aba-dicionario:checked ~ .aplicacao #painel-dicionario,
+    #aba-quiz:checked ~ .aplicacao #painel-quiz,
+    #aba-socorro:checked ~ .aplicacao #painel-socorro {
+      display: block;
+    }
+
+    /* Cartões e Blocos de Conteúdo */
+    .cartao {
+      background-color: var(--cor-cartao);
+      border: 3px solid var(--cor-primaria);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 25px;
+    }
+
+    .cartao h2, .cartao h3 {
+      color: var(--cor-primaria);
+      margin-bottom: 12px;
+      font-size: calc(var(--tamanho-fonte-base) + 4px);
+    }
+
+    .cartao p {
+      margin-bottom: 15px;
+    }
+
+    /* Caixa de Alerta amarela/escura */
+    .caixa-alerta {
+      background-color: var(--cor-alerta-fundo);
+      border-left: 8px solid var(--cor-alerta-borda);
+      padding: 16px;
+      border-radius: 6px;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    /* Caixa de Sucesso verde/escura */
+    .caixa-sucesso {
+      background-color: var(--cor-sucesso-fundo);
+      border-left: 8px solid var(--cor-sucesso-borda);
+      padding: 16px;
+      border-radius: 6px;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    /* Dicionário expansível (usando HTML5 details/summary) */
+    details {
+      background-color: var(--cor-cartao);
+      border: 2px solid var(--cor-primaria);
+      border-radius: 10px;
+      margin-bottom: 15px;
+      padding: 12px;
+    }
+
+    summary {
+      font-weight: bold;
+      font-size: calc(var(--tamanho-fonte-base) + 2px);
+      color: var(--cor-primaria);
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    summary:hover, summary:focus {
+      background-color: rgba(0, 75, 135, 0.1);
+      border-radius: 6px;
+    }
+
+    details p {
+      margin-top: 12px;
+      padding-left: 8px;
+    }
+
+    /* Estilos do Quiz */
+    .pergunta-quiz {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px dashed var(--cor-primaria);
+    }
+
+    .opcao-quiz {
+      display: block;
+      background-color: var(--cor-fundo);
+      border: 2px solid var(--cor-primaria);
+      padding: 14px;
+      border-radius: 10px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .opcao-quiz:hover {
+      outline: 3px solid #ffbf00;
+    }
+
+    .resposta-feedback {
+      display: none;
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    /* Lógica do Quiz com CSS puro */
+    #q1-correta:checked ~ #f1-correto,
+    #q1-errada:checked ~ #f1-errado,
+    #q2-correta:checked ~ #f2-correto,
+    #q2-errada:checked ~ #f2-errado {
+      display: block;
+    }
+
+    /* Botões grandes de ação */
+    .btn-ligar {
+      display: block;
+      width: 100%;
+      background-color: var(--cor-destaque);
+      color: #ffffff;
+      text-align: center;
+      font-weight: bold;
+      font-size: calc(var(--tamanho-fonte-base) + 2px);
+      padding: 20px;
+      text-decoration: none;
+      border-radius: 12px;
+      margin-top: 15px;
+      border: none;
+    }
+
+    .btn-ligar:hover, .btn-ligar:focus {
+      outline: 5px solid #ffbf00;
+    }
+
+    /* Rodapé */
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 2px solid var(--cor-primaria);
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Controles de estado via Checkbox / Radio (Acessibilidade e Abas) -->
+  <input type="checkbox" id="toggle-contraste" class="seletor-estado" aria-label="Ativar Alto Contraste">
+  <input type="checkbox" id="toggle-fonte" class="seletor-estado" aria-label="Aumentar Tamanho do Texto">
+
+  <input type="radio" name="navegacao" id="aba-dicas" class="seletor-estado" checked>
+  <input type="radio" name="navegacao" id="aba-dicionario" class="seletor-estado">
+  <input type="radio" name="navegacao" id="aba-quiz" class="seletor-estado">
+  <input type="radio" name="navegacao" id="aba-socorro" class="seletor-estado">
+
+  <!-- Container Principal do Aplicativo -->
+  <div class="aplicacao">
+
+    <!-- Barra Superior de Ferramentas de Acessibilidade -->
+    <div class="barra-acessibilidade" role="region" aria-label="Opções de Acessibilidade">
+      <label for="toggle-contraste" class="botao-acessibilidade" tabindex="0">
+        👁️ Alto Contraste
+      </label>
+      <label for="toggle-fonte" class="botao-acessibilidade" tabindex="0">
+        🔍 Texto Maior
+      </label>
+    </div>
+
+    <header>
+      <h1>Navegue Seguro 🛡️</h1>
+      <p>Seu guia simples de proteção no mundo digital</p>
+    </header>
+
+    <!-- Menu de Navegação por Abas -->
+    <nav class="navegacao-abas" aria-label="Menu de Seções">
+      <label for="aba-dicas" class="aba-rotulo" tabindex="0">1. Dicas Práticas</label>
+      <label for="aba-dicionario" class="aba-rotulo" tabindex="0">2. Dicionário</label>
+      <label for="aba-quiz" class="aba-rotulo" tabindex="0">3. Teste seu Saber</label>
+      <label for="aba-socorro" class="aba-rotulo" tabindex="0">4. Preciso de Ajuda</label>
+    </nav>
+
+    <!-- PAINEL 1: DICAS PRÁTICAS -->
+    <section id="painel-dicas" class="painel-conteudo" aria-labelledby="titulo-dicas">
+      <div class="cartao">
+        <h2 id="titulo-dicas">📲 Golpe do WhatsApp (Perfil Falso)</h2>
+        <p>Um desconhecido envia mensagem dizendo ser seu filho, neto ou parente, usando uma foto conhecida, afirmando que mudou de número e precisa de dinheiro urgente.</p>
+        <div class="caixa-alerta">
+          ⚠️ <strong>O QUE FAZER:</strong> Nunca envie dinheiro! Desligue a mensagem e ligue diretamente para o número antigo do seu parente para confirmar se é verdade.
+        </div>
+      </div>
+
+      <div class="cartao">
+        <h2>💳 Proteção com o Pix e Bancos</h2>
+        <p>Bancos e gerentes <strong>nunca</strong> ligam pedindo para você fazer transferências, nem solicitam sua senha ou códigos que chegam por SMS.</p>
+        <div class="caixa-alerta">
+          ⚠️ <strong>O QUE FAZER:</strong> Se receber uma ligação suspeita sobre sua conta, desligue imediatamente e vá até a sua agência ou ligue no número atrás do seu cartão.
+        </div>
+      </div>
+
+      <div class="cartao">
+        <h2>🔑 Senhas Fortes e Seguras</h2>
+        <p>Evite usar datas de nascimento, números de documento ou nomes de familiares como senha para suas contas e aplicativos.</p>
+        <div class="caixa-sucesso">
+          💡 <strong>DICA DE OURO:</strong> Anote suas senhas num caderno guardado em um local seguro em sua casa. Nunca salve senhas num papel dentro da capinha do celular.
+        </div>
+      </div>
+    </section>
+
+    <!-- PAINEL 2: DICIONÁRIO DIGITAL -->
+    <section id="painel-dicionario" class="painel-conteudo" aria-labelledby="titulo-dicionario">
+      <div class="cartao">
+        <h2 id="titulo-dicionario">📖 Entenda os Termos da Internet</h2>
+        <p>Clique em uma palavra abaixo para ler o significado de forma simples:</p>
+
+        <details>
+          <summary>🔗 Link (ou Endereço Web)</summary>
+          <p>É uma linha de texto azul ou um botão que, ao ser clicado, abre uma nova página na internet. Só clique em links enviados por pessoas conhecidas.</p>
+        </details>
+
+        <details>
+          <summary>🎣 Phishing (Golpe da Pescaria)</summary>
+          <p>É uma mensagem falsa criada por golpistas para "fisgar" seus dados, senhas ou dinheiro, fingindo ser de um banco, loja ou correios.</p>
+        </details>
+
+        <details>
+          <summary>📲 Código de Verificação (SMS)</summary>
+          <p>É um número de 4 a 6 dígitos que chega por mensagem no celular para confirmar quem você é. <strong>Nunca passe esse número para ninguém!</strong></p>
+        </details>
+
+        <details>
+          <summary>☁️ Nuvem (Salvar na Nuvem)</summary>
+          <p>Significa guardar fotos, vídeos ou contatos num computador distante na internet, para não perder nada caso seu celular estrague.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- PAINEL 3: QUIZ DE PRÁTICA -->
+    <section id="painel-quiz" class="painel-conteudo" aria-labelledby="titulo-quiz">
+      <div class="cartao">
+        <h2 id="titulo-quiz">🧪 Teste Seus Conhecimentos</h2>
+        <p>Responda às situações abaixo para treinar a sua segurança:</p>
+
+        <!-- Pergunta 1 -->
+        <div class="pergunta-quiz">
+          <h3>1. Você recebe uma mensagem no WhatsApp pedindo dinheiro urgente para seu neto. Qual é a melhor atitude?</h3>
+          
+          <input type="radio" id="q1-errada" name="pergunta1" class="seletor-estado">
+          <label for="q1-errada" class="opcao-quiz">A) Fazer o Pix imediatamente para ajudar rápido.</label>
+
+          <input type="radio" id="q1-correta" name="pergunta1" class="seletor-estado">
+          <label for="q1-correta" class="opcao-quiz">B) Ligar para o número normal do neto e confirmar antes de fazer qualquer coisa.</label>
+
+          <div id="f1-errado" class="resposta-feedback caixa-alerta">
+            ❌ Perigoso! Pode ser um golpista usando a foto do seu neto. Sempre confirme por ligação antes.
+          </div>
+          <div id="f1-correto" class="resposta-feedback caixa-sucesso">
+            ✅ Muito bem! Essa é a atitude correta e mais segura.
+          </div>
+        </div>
+
+        <!-- Pergunta 2 -->
+        <div class="pergunta-quiz">
+          <h3>2. Uma pessoa liga dizendo que é do seu banco e pede para digitar a sua senha no telefone. O que fazer?</h3>
+          
+          <input type="radio" id="q2-correta" name="pergunta2" class="seletor-estado">
+          <label for="q2-correta" class="opcao-quiz">A) Desligar o telefone. O banco nunca pede senhas por ligação.</label>
+
+          <input type="radio" id="q2-errada" name="pergunta2" class="seletor-estado">
+          <label for="q2-errada" class="opcao-quiz">B) Digitar a senha devagar para o atendente verificar.</label>
+
+          <div id="f2-correto" class="resposta-feedback caixa-sucesso">
+            ✅ Correto! Os bancos jamais pedem senhas por telefone ou mensagem.
+          </div>
+          <div id="f2-errado" class="resposta-feedback caixa-alerta">
+            ❌ Cuidado! Bancos de verdade nunca pedem sua senha. Desligue a chamada!
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAINEL 4: PRECISO DE AJUDA -->
+    <section id="painel-socorro" class="painel-conteudo" aria-labelledby="titulo-socorro">
+      <div class="cartao">
+        <h2 id="titulo-socorro">🚨 O que fazer se cair em um golpe?</h2>
+        <p>Não se envergonhe, isso pode acontecer com qualquer pessoa. Siga estes passos rapidamente:</p>
+
+        <ol style="padding-left: 25px; margin-bottom: 20px;">
+          <li><strong>Avise seu banco:</strong> Ligue no telefone do cartão e peça o bloqueio do Pix ou cartão.</li>
+          <li><strong>Avise sua família:</strong> Peça ajuda a um filho, parente ou pessoa de confiança imediata.</li>
+          <li><strong>Faça um Boletim de Ocorrência (BO):</strong> Procure a Delegacia de Polícia mais próxima.</li>
+        </ol>
+
+        <a href="tel:190" class="btn-ligar">📞 Ligar para a Polícia (190)</a>
+        <a href="tel:100" class="btn-ligar" style="background-color: var(--cor-primaria);">📞 Disque Direitos Humanos (Disque 100)</a>
+      </div>
+    </section>
+
+    <footer>
+      <p><strong>Navegue Seguro</strong> - Aplicativo Educativo de Acessibilidade Digital.</p>
+      <p>Desenvolvido exclusivamente com HTML e CSS para ser leve, direto e acessível.</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>seletor-estado" aria-label="Ativar Alto Contraste">
+  <input type="checkbox" id="toggle-fonte" class="seletor-estado" aria-label="Aumentar Tamanho do Texto">
+
+  <input type="radio" name="navegacao" id="aba-dicas" class="seletor-estado" checked>
+  <input type="radio" name="navegacao" id="aba-dicionario" class="seletor-estado">
+  <input type="radio" name="navegacao" id="aba-quiz" class="seletor-estado">
+  <input type="radio" name="navegacao" id="aba-socorro" class="seletor-estado">
+
+  <!-- Container Principal do Aplicativo -->
+  <div class="aplicacao">
+
+    <!-- Barra Superior de Ferramentas de Acessibilidade -->
+    <div class="barra-acessibilidade" role="region" aria-label="Opções de Acessibilidade">
+      <label for="toggle-contraste" class="botao-acessibilidade" tabindex="0">
+        👁️ Alto Contraste
+      </label>
+      <label for="toggle-fonte" class="botao-acessibilidade" tabindex="0">
+        🔍 Texto Maior
+      </label>
+    </div>
+
+    <header>
+      <h1>Navegue Seguro 🛡️</h1>
+      <p>Seu guia simples de proteção no mundo digital</p>
+    </header>
+
+    <!-- Menu de Navegação por Abas -->
+    <nav class="navegacao-abas" aria-label="Menu de Seções">
+      <label for="aba-dicas" class="aba-rotulo" tabindex="0">1. Dicas Práticas</label>
+      <label for="aba-dicionario" class="aba-rotulo" tabindex="0">2. Dicionário</label>
+      <label for="aba-quiz" class="aba-rotulo" tabindex="0">3. Teste seu Saber</label>
+      <label for="aba-socorro" class="aba-rotulo" tabindex="0">4. Preciso de Ajuda</label>
+    </nav>
+
+    <!-- PAINEL 1: DICAS PRÁTICAS -->
+    <section id="painel-dicas" class="painel-conteudo" aria-labelledby="titulo-dicas">
+      <div class="cartao">
+        <h2 id="titulo-dicas">📲 Golpe do WhatsApp (Perfil Falso)</h2>
+        <p>Um desconhecido envia mensagem dizendo ser seu filho, neto ou parente, usando uma foto conhecida, afirmando que mudou de número e precisa de dinheiro urgente.</p>
+        <div class="caixa-alerta">
+          ⚠️ <strong>O QUE FAZER:</strong> Nunca envie dinheiro! Desligue a mensagem e ligue diretamente para o número antigo do seu parente para confirmar se é verdade.
+        </div>
+      </div>
+
+      <div class="cartao">
+        <h2>💳 Proteção com o Pix e Bancos</h2>
+        <p>Bancos e gerentes <strong>nunca</strong> ligam pedindo para você fazer transferências, nem solicitam sua senha ou códigos que chegam por SMS.</p>
+        <div class="caixa-alerta">
+          ⚠️ <strong>O QUE FAZER:</strong> Se receber uma ligação suspeita sobre sua conta, desligue imediatamente e vá até a sua agência ou ligue no número atrás do seu cartão.
+        </div>
+      </div>
+
+      <div class="cartao">
+        <h2>🔑 Senhas Fortes e Seguras</h2>
+        <p>Evite usar datas de nascimento, números de documento ou nomes de familiares como senha para suas contas e aplicativos.</p>
+        <div class="caixa-sucesso">
+          💡 <strong>DICA DE OURO:</strong> Anote suas senhas num caderno guardado em um local seguro em sua casa. Nunca salve senhas num papel dentro da capinha do celular.
+        </div>
+      </div>
+    </section>
+
+    <!-- PAINEL 2: DICIONÁRIO DIGITAL -->
+    <section id="painel-dicionario" class="painel-conteudo" aria-labelledby="titulo-dicionario">
+      <div class="cartao">
+        <h2 id="titulo-dicionario">📖 Entenda os Termos da Internet</h2>
+        <p>Clique em uma palavra abaixo para ler o significado de forma simples:</p>
+
+        <details>
+          <summary>🔗 Link (ou Endereço Web)</summary>
+          <p>É uma linha de texto azul ou um botão que, ao ser clicado, abre uma nova página na internet. Só clique em links enviados por pessoas conhecidas.</p>
+        </details>
+
+        <details>
+          <summary>🎣 Phishing (Golpe da Pescaria)</summary>
+          <p>É uma mensagem falsa criada por golpistas para "fisgar" seus dados, senhas ou dinheiro, fingindo ser de um banco, loja ou correios.</p>
+        </details>
+
+        <details>
+          <summary>📲 Código de Verificação (SMS)</summary>
+          <p>É um número de 4 a 6 dígitos que chega por mensagem no celular para confirmar quem você é. <strong>Nunca passe esse número para ninguém!</strong></p>
+        </details>
+
+        <details>
+          <summary>☁️ Nuvem (Salvar na Nuvem)</summary>
+          <p>Significa guardar fotos, vídeos ou contatos num computador distante na internet, para não perder nada caso seu celular estrague.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- PAINEL 3: QUIZ DE PRÁTICA -->
+    <section id="painel-quiz" class="painel-conteudo" aria-labelledby="titulo-quiz">
+      <div class="cartao">
+        <h2 id="titulo-quiz">🧪 Teste Seus Conhecimentos</h2>
+        <p>Responda às situações abaixo para treinar a sua segurança:</p>
+
+        <!-- Pergunta 1 -->
+        <div class="pergunta-quiz">
+          <h3>1. Você recebe uma mensagem no WhatsApp pedindo dinheiro urgente para seu neto. Qual é a melhor atitude?</h3>
+          
+          <input type="radio" id="q1-errada" name="pergunta1" class="seletor-estado">
+          <label for="q1-errada" class="opcao-quiz">A) Fazer o Pix imediatamente para ajudar rápido.</label>
+
+          <input type="radio" id="q1-correta" name="pergunta1" class="seletor-estado">
+          <label for="q1-correta" class="opcao-quiz">B) Ligar para o número normal do neto e confirmar antes de fazer qualquer coisa.</label>
+
+          <div id="f1-errado" class="resposta-feedback caixa-alerta">
+            ❌ Perigoso! Pode ser um golpista usando a foto do seu neto. Sempre confirme por ligação antes.
+          </div>
+          <div id="f1-correto" class="resposta-feedback caixa-sucesso">
+            ✅ Muito bem! Essa é a atitude correta e mais segura.
+          </div>
+        </div>
+
+        <!-- Pergunta 2 -->
+        <div class="pergunta-quiz">
+          <h3>2. Uma pessoa liga dizendo que é do seu banco e pede para digitar a sua senha no telefone. O que fazer?</h3>
+          
+          <input type="radio" id="q2-correta" name="pergunta2" class="seletor-estado">
+          <label for="q2-correta" class="opcao-quiz">A) Desligar o telefone. O banco nunca pede senhas por ligação.</label>
+
+          <input type="radio" id="q2-errada" name="pergunta2" class="seletor-estado">
+          <label for="q2-errada" class="opcao-quiz">B) Digitar a senha devagar para o atendente verificar.</label>
+
+          <div id="f2-correto" class="resposta-feedback caixa-sucesso">
+            ✅ Correto! Os bancos jamais pedem senhas por telefone ou mensagem.
+          </div>
+          <div id="f2-errado" class="resposta-feedback caixa-alerta">
+            ❌ Cuidado! Bancos de verdade nunca pedem sua senha. Desligue a chamada!
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAINEL 4: PRECISO DE AJUDA -->
+    <section id="painel-socorro" class="painel-conteudo" aria-labelledby="titulo-socorro">
+      <div class="cartao">
+        <h2 id="titulo-socorro">🚨 O que fazer se cair em um golpe?</h2>
+        <p>Não se envergonhe, isso pode acontecer com qualquer pessoa. Siga estes passos rapidamente:</p>
+
+        <ol style="padding-left: 25px; margin-bottom: 20px;">
+          <li><strong>Avise seu banco:</strong> Ligue no telefone do cartão e peça o bloqueio do Pix ou cartão.</li>
+          <li><strong>Avise sua família:</strong> Peça ajuda a um filho, parente ou pessoa de confiança imediata.</li>
+          <li><strong>Faça um Boletim de Ocorrência (BO):</strong> Procure a Delegacia de Polícia mais próxima.</li>
+        </ol>
+
+        <a href="tel:190" class="btn-ligar">📞 Ligar para a Polícia (190)</a>
+        <a href="tel:100" class="btn-ligar" style="background-color: var(--cor-primaria);">📞 Disque Direitos Humanos (Disque 100)</a>
+      </div>
+    </section>
+
+    <footer>
+      <p><strong>Navegue Seguro</strong> - Aplicativo Educativo de Acessibilidade Digital.</p>
+      <p>Desenvolvido exclusivamente com HTML e CSS para ser leve, direto e acessível.</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
